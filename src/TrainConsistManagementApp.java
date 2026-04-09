@@ -1,6 +1,6 @@
-
 import java.util.*;
 import java.util.stream.Collectors;
+
 class Bogie {
     String name;
     int capacity;
@@ -12,21 +12,21 @@ class Bogie {
 }
 public class TrainConsistManagementApp {
     public static void main(String[] args) {
-        // Create list of bogies (same as UC7)
+        // Create list of bogies
         List<Bogie> list = new ArrayList<>();
         list.add(new Bogie("Sleeper", 72));
         list.add(new Bogie("AC Chair", 60));
+        list.add(new Bogie("Sleeper", 70));
         list.add(new Bogie("First Class", 40));
 
-        // Stream + filter (capacity > 60)
-        List<Bogie> filtered = list.stream()
-                .filter(b -> b.capacity > 60)
-                .collect(Collectors.toList());
+        // Group bogies by name
+        Map<String, List<Bogie>> grouped = list.stream()
+                .collect(Collectors.groupingBy(b -> b.name));
 
-        // Display filtered bogies
-        System.out.println("Filtered Bogies (capacity > 60):");
-        for (Bogie b : filtered) {
-            System.out.println(b.name + " -> " + b.capacity);
+        // Display grouped result
+        System.out.println("Grouped Bogies:");
+        for (Map.Entry<String, List<Bogie>> entry : grouped.entrySet()) {
+            System.out.println(entry.getKey() + " -> " + entry.getValue().size() + " bogies");
         }
 
     }
