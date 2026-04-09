@@ -1,51 +1,38 @@
-import java.util.*;
-import java.util.stream.Collectors;
+// Custom Exception
+class InvalidCapacityException extends Exception {
+    InvalidCapacityException(String message) {
+        super(message);
+    }
+}
 
-class Bogie {
+// Passenger Bogie class
+class PassengerBogie {
     String name;
     int capacity;
 
-    Bogie(String name, int capacity) {
+    PassengerBogie(String name, int capacity) throws InvalidCapacityException {
+        if (capacity <= 0) {
+            throw new InvalidCapacityException("Capacity must be greater than 0");
+        }
         this.name = name;
         this.capacity = capacity;
     }
 }
 
+
 public class TrainConsistManagementApp {
     public static void main(String[] args) {
 
-        // Create bogie list
-        List<Bogie> list = new ArrayList<>();
-        for (int i = 0; i < 10000; i++) {
-            list.add(new Bogie("B" + i, i));
+        try {
+            PassengerBogie b1 = new PassengerBogie("Sleeper", 72);
+            System.out.println("Bogie created: " + b1.name);
+
+            PassengerBogie b2 = new PassengerBogie("AC Chair", -10);
+            System.out.println("Bogie created: " + b2.name);
+
+        } catch (InvalidCapacityException e) {
+            System.out.println("Error: " + e.getMessage());
         }
-
-        // -------- LOOP BASED --------
-        long startLoop = System.nanoTime();
-
-        List<Bogie> loopResult = new ArrayList<>();
-        for (Bogie b : list) {
-            if (b.capacity > 5000) {
-                loopResult.add(b);
-            }
-        }
-
-        long endLoop = System.nanoTime();
-        long loopTime = endLoop - startLoop;
-
-        // -------- STREAM BASED --------
-        long startStream = System.nanoTime();
-
-        List<Bogie> streamResult = list.stream()
-                .filter(b -> b.capacity > 5000)
-                .collect(Collectors.toList());
-
-        long endStream = System.nanoTime();
-        long streamTime = endStream - startStream;
-
-        // Output
-        System.out.println("Loop Execution Time: " + loopTime + " ns");
-        System.out.println("Stream Execution Time: " + streamTime + " ns");
     }
     }
 
