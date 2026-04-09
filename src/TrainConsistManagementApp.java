@@ -1,22 +1,34 @@
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
+class Bogie {
+    String name;
+    int capacity;
+
+    Bogie(String name, int capacity) {
+        this.name = name;
+        this.capacity = capacity;
+    }
+}
+
 
 
 public class TrainConsistManagementApp {
     public static void main(String[] args) {
+// Create list of bogies
+        List<Bogie> list = new ArrayList<>();
 
-        // Create HashMap for bogie-capacity
-        HashMap<String, Integer> capacityMap = new HashMap<>();
+        // Add bogies
+        list.add(new Bogie("Sleeper", 72));
+        list.add(new Bogie("AC Chair", 60));
+        list.add(new Bogie("First Class", 40));
 
-        // Insert bogies with capacity
-        capacityMap.put("Sleeper", 72);
-        capacityMap.put("AC Chair", 60);
-        capacityMap.put("First Class", 40);
+        // Sort by capacity (ascending)
+        list.sort(Comparator.comparingInt(b -> b.capacity));
 
-        // Iterate using entrySet()
-        for (Map.Entry<String, Integer> entry : capacityMap.entrySet()) {
-            System.out.println(entry.getKey() + " -> Capacity: " + entry.getValue());
+        // Display sorted bogies
+        for (Bogie b : list) {
+            System.out.println(b.name + " -> " + b.capacity);
         }
 
     }
