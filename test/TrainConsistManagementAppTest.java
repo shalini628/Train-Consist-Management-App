@@ -4,114 +4,98 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
 public class TrainConsistManagementAppTest {
 
-    // Helper method (same grouping logic)
-    private Map<String, List<Bogie>> group(List<Bogie> list) {
+    // Helper method (same logic as your main program)
+    private int totalCapacity(List<Bogie> list) {
         return list.stream()
-                .collect(Collectors.groupingBy(b -> b.name));
+                .map(b -> b.capacity)
+                .reduce(0, Integer::sum);
     }
 
     @Test
-    void testGrouping_BogiesGroupedByType() {
-        List<Bogie> list = Arrays.asList(
-                new Bogie("Sleeper", 72),
-                new Bogie("Sleeper", 70)
-        );
-
-        Map<String, List<Bogie>> result = group(list);
-
-        assertTrue(result.containsKey("Sleeper"));
-        assertEquals(2, result.get("Sleeper").size());
-    }
-
-    @Test
-    void testGrouping_MultipleBogiesInSameGroup() {
-        List<Bogie> list = Arrays.asList(
-                new Bogie("Sleeper", 72),
-                new Bogie("Sleeper", 75),
-                new Bogie("AC Chair", 60)
-        );
-
-        Map<String, List<Bogie>> result = group(list);
-
-        assertEquals(2, result.get("Sleeper").size());
-    }
-
-    @Test
-    void testGrouping_DifferentBogieTypes() {
+    void testReduce_TotalSeatCalculation() {
         List<Bogie> list = Arrays.asList(
                 new Bogie("Sleeper", 72),
                 new Bogie("AC Chair", 60),
                 new Bogie("First Class", 40)
         );
 
-        Map<String, List<Bogie>> result = group(list);
+        int total = totalCapacity(list);
 
-        assertEquals(3, result.size());
+        assertEquals(172, total);
     }
 
     @Test
-    void testGrouping_EmptyBogieList() {
+    void testReduce_MultipleBogiesAggregation() {
+        List<Bogie> list = Arrays.asList(
+                new Bogie("Sleeper", 72),
+                new Bogie("Luxury", 80),
+                new Bogie("AC Chair", 60)
+        );
+
+        int total = totalCapacity(list);
+
+        assertEquals(212, total);
+    }
+
+    @Test
+    void testReduce_SingleBogieCapacity() {
+        List<Bogie> list = Arrays.asList(
+                new Bogie("Sleeper", 72)
+        );
+
+        int total = totalCapacity(list);
+
+        assertEquals(72, total);
+    }
+
+    @Test
+    void testReduce_EmptyBogieList() {
         List<Bogie> list = new ArrayList<>();
 
-        Map<String, List<Bogie>> result = group(list);
+        int total = totalCapacity(list);
 
-        assertTrue(result.isEmpty());
+        assertEquals(0, total);
     }
 
     @Test
-    void testGrouping_SingleBogieCategory() {
+    void testReduce_CorrectCapacityExtraction() {
         List<Bogie> list = Arrays.asList(
-                new Bogie("Sleeper", 72),
-                new Bogie("Sleeper", 75)
+                new Bogie("A", 10),
+                new Bogie("B", 20),
+                new Bogie("C", 30)
         );
 
-        Map<String, List<Bogie>> result = group(list);
+        int total = totalCapacity(list);
 
-        assertEquals(1, result.size());
-        assertTrue(result.containsKey("Sleeper"));
+        assertEquals(60, total); // 10 + 20 + 30
     }
 
     @Test
-    void testGrouping_MapContainsCorrectKeys() {
+    void testReduce_AllBogiesIncluded() {
         List<Bogie> list = Arrays.asList(
-                new Bogie("Sleeper", 72),
-                new Bogie("AC Chair", 60),
-                new Bogie("First Class", 40)
+                new Bogie("A", 10),
+                new Bogie("B", 20),
+                new Bogie("C", 30),
+                new Bogie("D", 40)
         );
 
-        Map<String, List<Bogie>> result = group(list);
+        int total = totalCapacity(list);
 
-        assertTrue(result.containsKey("Sleeper"));
-        assertTrue(result.containsKey("AC Chair"));
-        assertTrue(result.containsKey("First Class"));
+        assertEquals(100, total);
     }
 
     @Test
-    void testGrouping_GroupSizeValidation() {
-        List<Bogie> list = Arrays.asList(
-                new Bogie("Sleeper", 72),
-                new Bogie("Sleeper", 75),
-                new Bogie("AC Chair", 60)
-        );
-
-        Map<String, List<Bogie>> result = group(list);
-
-        assertEquals(2, result.get("Sleeper").size());
-        assertEquals(1, result.get("AC Chair").size());
-    }
-
-    @Test
-    void testGrouping_OriginalListUnchanged() {
+    void testReduce_OriginalListUnchanged() {
         List<Bogie> list = new ArrayList<>();
         list.add(new Bogie("Sleeper", 72));
         list.add(new Bogie("AC Chair", 60));
 
-        List<Bogie> originalCopy = new ArrayList<>(list);
+        List<Bogie> copy = new ArrayList<>(list);
 
-        group(list);
+        totalCapacity(list);
 
-        assertEquals(originalCopy.size(), list.size());
-        assertEquals(originalCopy.get(0).name, list.get(0).name);
+        assertEquals(copy.size(), list.size());
+        assertEquals(copy.get(0).name, list.get(0).name);
     }
 
 }
